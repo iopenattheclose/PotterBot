@@ -175,3 +175,5 @@ venv/
 data/
 
 *.csv
+
+qna_data/
