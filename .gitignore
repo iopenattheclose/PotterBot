@@ -178,7 +178,7 @@ data_1/
 
 fine_tuning_.py
 
-adapters.nz
+adapters.npz
 
 *.csv
 
