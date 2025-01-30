@@ -7,3 +7,4 @@ mlx_lm
 transformers
 jupyterlab
 ipywidgets
+scikit-learn

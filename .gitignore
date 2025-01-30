@@ -174,6 +174,11 @@ venv/
 
 data/
 
+data_1/
+
+fine_tuning_.py
+
+
 *.csv
 
 qna_data/
