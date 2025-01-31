@@ -5,6 +5,7 @@ import json
 import math
 import time
 from pathlib import Path
+import os
 
 import mlx.core as mx
 import mlx.nn as nn
@@ -359,38 +360,43 @@ if __name__ == "__main__":
     print("before start training")
     # if args.train:
     if(True):
-        print("Training")
-        opt = optim.Adam(learning_rate=args.learning_rate)
+        if not os.path.exists("/Users/prupro/Desktop/Github/PotterBot/adapters.npz"):
+            print("Training")
+            opt = optim.Adam(learning_rate=args.learning_rate)
 
-        # Train model
-        train(model, train_set, valid_set, opt, loss, tokenizer, args)
+            # Train model
+            train(model, train_set, valid_set, opt, loss, tokenizer, args)
 
-        # Save adapter weights
-        mx.savez(args.adapter_file, **dict(tree_flatten(model.trainable_parameters())))
+            # Save adapter weights
+            mx.savez(args.adapter_file, **dict(tree_flatten(model.trainable_parameters())))
 
     # Load the LoRA adapter weights which we assume should exist by this point
-    if not Path(args.adapter_file).is_file():
+    if not os.path.exists("/Users/prupro/Desktop/Github/PotterBot/adapters.npz"):
         raise ValueError(
             f"Adapter file {args.adapter_file} missing. "
             "Use --train to learn and save the adapters.npz."
         )
+    
     model.load_weights(args.adapter_file, strict=False)
 
-    if args.test:
-        print("Testing")
-        model.eval()
-        test_loss = evaluate(
-            model,
-            test_set,
-            loss,
-            tokenizer,
-            args.batch_size,
-            num_batches=args.test_batches,
-        )
-        test_ppl = math.exp(test_loss)
+    print("Model is ready for inference\n")
+    print("Enter your question\n")
+    prompt = input()
+    # if prompt is not None:
+    #     print("Testing")
+    #     model.eval()
+    #     test_loss = evaluate(
+    #         model,
+    #         test_set,
+    #         loss,
+    #         tokenizer,
+    #         args.batch_size,
+    #         num_batches=args.test_batches,
+    #     )
+    #     test_ppl = math.exp(test_loss)
 
-        print(f"Test loss {test_loss:.3f}, Test ppl {test_ppl:.3f}.")
+    #     print(f"Test loss {test_loss:.3f}, Test ppl {test_ppl:.3f}.")
 
-    if args.prompt is not None:
+    if prompt is not None:
         print("Generating")
-        generate(model, args.prompt, tokenizer, args)
+        generate(model, prompt, tokenizer, args)
